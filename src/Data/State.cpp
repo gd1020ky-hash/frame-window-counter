@@ -1,9 +1,12 @@
+#include "State.hpp"
+#include "FrameWindowValidation.hpp"
+
 void updateTickCache() {
     g_tickActionsCache.clear();
     g_tickActionsCache.reserve(g_frameActions.size());
 
-    for (const auto& [key, value] : g_frameActions) {
-        FrameAction action = value;
+    for (const auto& entry : g_frameActions) {
+        FrameAction action = entry.second;
 
         action.frameWindow =
             afwc::normalizeFrameWindow(action.frameWindow);
@@ -14,7 +17,7 @@ void updateTickCache() {
         g_tickActionsCache.push_back(action);
     }
 
-    // Keep multiple actions at the same frame as separate actions.
-    // Stable sorting preserves their relative order for equal frame numbers.
+    // Preserve separate actions at the same frame.
+    // Stable sorting preserves their relative order.
     afwc::stableSortByFrame(g_tickActionsCache);
 }
